@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Feedback - Online Feedback System</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .user-details h4 {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .user-details p {
+            margin: 0;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        
+        .feedback-container {
+            background-color: white;
+            border-radius: 5px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .course-selector {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        select.form-control {
+            height: 40px;
+        }
+        
+        .rating-scale {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .rating-scale span {
+            font-size: 0.8rem;
+            color: #777;
+            width: 20%;
+            text-align: center;
+        }
+        
+        .rating-options {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .rating-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 20%;
+        }
+        
+        .rating-option input[type="radio"] {
+            display: none;
+        }
+        
+        .rating-option label {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            background-color: #eee;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .rating-option input[type="radio"]:checked + label {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .rating-option .rating-text {
+            font-size: 0.7rem;
+            margin-top: 5px;
+            color: #777;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-4 {
+            margin-top: 40px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .feedback-complete {
+            text-align: center;
+            padding: 50px 0;
+        }
+        
+        .feedback-complete i {
+            font-size: 5rem;
+            color: var(--success-color);
+            margin-bottom: 20px;
+        }
+        
+        .feedback-complete h2 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .user-info {
+                margin-top: 10px;
+            }
+            
+            .rating-option label {
+                width: 25px;
+                height: 25px;
+                line-height: 25px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">Online Feedback System</div>
+            <div class="user-info">
+                <img src="https://via.placeholder.com/40" alt="User">
+                <div class="user-details">
+                    <h4>John Doe</h4>
+                    <p>Roll No: 2023CS101</p>
+                </div>
+                <button class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="feedback-container">
+            <h1>Faculty Feedback Form</h1>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Please provide honest feedback about your faculty member. 
+                Your responses are anonymous and will help improve teaching quality.
+            </div>
+            
+            <div class="course-selector">
+                <div class="form-group">
+                    <label for="selectCourse">Select Course</label>
+                    <select id="selectCourse" class="form-control">
+                        <option value="">-- Select Course --</option>
+                        <option value="CS101">CS101 - Introduction to Programming</option>
+                        <option value="CS102">CS102 - Data Structures</option>
+                        <option value="MA101">MA101 - Discrete Mathematics</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="selectFaculty">Faculty Member</label>
+                    <select id="selectFaculty" class="form-control" disabled>
+                        <option value="">-- Select Course First --</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="feedbackForm">
+                <div class="form-group">
+                    <label>1. Syllabus Coverage: The faculty covered the entire syllabus as prescribed by the university</label>
+                    <div class="rating-scale">
+                        <span>Strongly Disagree</span>
+                        <span>Disagree</span>
+                        <span>Neutral</span>
+                        <span>Agree</span>
+                        <span>Strongly Agree</span>
+                    </div>
+                    <div class="rating-options">
+                        <div class="rating-option">
+                            <input type="radio" id="q1-1" name="q1" value="1">
+                            <label for="q1-1">1</label>
+                            <div class="rating-text">Poor</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q1-2" name="q1" value="2">
+                            <label for="q1-2">2</label>
+                            <div class="rating-text">Fair</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q1-3" name="q1" value="3">
+                            <label for="q1-3">3</label>
+                            <div class="rating-text">Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q1-4" name="q1" value="4">
+                            <label for="q1-4">4</label>
+                            <div class="rating-text">Very Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q1-5" name="q1" value="5">
+                            <label for="q1-5">5</label>
+                            <div class="rating-text">Excellent</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>2. Clarification of Doubts: The faculty was approachable and helpful in clarifying doubts</label>
+                    <div class="rating-scale">
+                        <span>Strongly Disagree</span>
+                        <span>Disagree</span>
+                        <span>Neutral</span>
+                        <span>Agree</span>
+                        <span>Strongly Agree</span>
+                    </div>
+                    <div class="rating-options">
+                        <div class="rating-option">
+                            <input type="radio" id="q2-1" name="q2" value="1">
+                            <label for="q2-1">1</label>
+                            <div class="rating-text">Poor</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q2-2" name="q2" value="2">
+                            <label for="q2-2">2</label>
+                            <div class="rating-text">Fair</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q2-3" name="q2" value="3">
+                            <label for="q2-3">3</label>
+                            <div class="rating-text">Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q2-4" name="q2" value="4">
+                            <label for="q2-4">4</label>
+                            <div class="rating-text">Very Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q2-5" name="q2" value="5">
+                            <label for="q2-5">5</label>
+                            <div class="rating-text">Excellent</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>3. Teaching Methods: The faculty used effective teaching methods (blackboard, presentations, examples, etc.)</label>
+                    <div class="rating-scale">
+                        <span>Strongly Disagree</span>
+                        <span>Disagree</span>
+                        <span>Neutral</span>
+                        <span>Agree</span>
+                        <span>Strongly Agree</span>
+                    </div>
+                    <div class="rating-options">
+                        <div class="rating-option">
+                            <input type="radio" id="q3-1" name="q3" value="1">
+                            <label for="q3-1">1</label>
+                            <div class="rating-text">Poor</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q3-2" name="q3" value="2">
+                            <label for="q3-2">2</label>
+                            <div class="rating-text">Fair</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q3-3" name="q3" value="3">
+                            <label for="q3-3">3</label>
+                            <div class="rating-text">Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q3-4" name="q3" value="4">
+                            <label for="q3-4">4</label>
+                            <div class="rating-text">Very Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q3-5" name="q3" value="5">
+                            <label for="q3-5">5</label>
+                            <div class="rating-text">Excellent</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>4. Real-world Examples: The faculty related concepts to real-world examples</label>
+                    <div class="rating-scale">
+                        <span>Strongly Disagree</span>
+                        <span>Disagree</span>
+                        <span>Neutral</span>
+                        <span>Agree</span>
+                        <span>Strongly Agree</span>
+                    </div>
+                    <div class="rating-options">
+                        <div class="rating-option">
+                            <input type="radio" id="q4-1" name="q4" value="1">
+                            <label for="q4-1">1</label>
+                            <div class="rating-text">Poor</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q4-2" name="q4" value="2">
+                            <label for="q4-2">2</label>
+                            <div class="rating-text">Fair</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q4-3" name="q4" value="3">
+                            <label for="q4-3">3</label>
+                            <div class="rating-text">Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q4-4" name="q4" value="4">
+                            <label for="q4-4">4</label>
+                            <div class="rating-text">Very Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q4-5" name="q4" value="5">
+                            <label for="q4-5">5</label>
+                            <div class="rating-text">Excellent</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>5. Communication Skills: The faculty communicated clearly and effectively</label>
+                    <div class="rating-scale">
+                        <span>Strongly Disagree</span>
+                        <span>Disagree</span>
+                        <span>Neutral</span>
+                        <span>Agree</span>
+                        <span>Strongly Agree</span>
+                    </div>
+                    <div class="rating-options">
+                        <div class="rating-option">
+                            <input type="radio" id="q5-1" name="q5" value="1">
+                            <label for="q5-1">1</label>
+                            <div class="rating-text">Poor</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q5-2" name="q5" value="2">
+                            <label for="q5-2">2</label>
+                            <div class="rating-text">Fair</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q5-3" name="q5" value="3">
+                            <label for="q5-3">3</label>
+                            <div class="rating-text">Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q5-4" name="q5" value="4">
+                            <label for="q5-4">4</label>
+                            <div class="rating-text">Very Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q5-5" name="q5" value="5">
+                            <label for="q5-5">5</label>
+                            <div class="rating-text">Excellent</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>6. Subject Knowledge: The faculty demonstrated excellent knowledge of the subject</label>
+                    <div class="rating-scale">
+                        <span>Strongly Disagree</span>
+                        <span>Disagree</span>
+                        <span>Neutral</span>
+                        <span>Agree</span>
+                        <span>Strongly Agree</span>
+                    </div>
+                    <div class="rating-options">
+                        <div class="rating-option">
+                            <input type="radio" id="q6-1" name="q6" value="1">
+                            <label for="q6-1">1</label>
+                            <div class="rating-text">Poor</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q6-2" name="q6" value="2">
+                            <label for="q6-2">2</label>
+                            <div class="rating-text">Fair</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q6-3" name="q6" value="3">
+                            <label for="q6-3">3</label>
+                            <div class="rating-text">Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q6-4" name="q6" value="4">
+                            <label for="q6-4">4</label>
+                            <div class="rating-text">Very Good</div>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="q6-5" name="q6" value="5">
+                            <label for="q6-5">5</label>
+                            <div class="rating-text">Excellent</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comments">7. Additional Comments (Optional)</label>
+                    <textarea id="comments" class="form-control" rows="4" placeholder="Any additional feedback or suggestions..."></textarea>
+                </div>
+                
+                <div class="form-group mt-4">
+                    <button class="btn btn-block" onclick="submitFeedback()">Submit Feedback</button>
+                </div>
+            </div>
+            
+            <div id="feedbackComplete" class="feedback-complete" style="display: none;">
+                <i class="fas fa-check-circle"></i>
+                <h2>Thank You!</h2>
+                <p>Your feedback has been submitted successfully.</p>
+                <p>We appreciate your time and valuable input.</p>
+                <button class="btn" onclick="window.location.href='student_dashboard.html'">Return to Dashboard</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Course selection logic
+        document.getElementById('selectCourse').addEventListener('change', function() {
+            const course = this.value;
+            const facultySelect = document.getElementById('selectFaculty');
+            
+            if (course) {
+                // In a real app, you would fetch faculty for this course from the server
+                // Here we simulate it with dummy data
+                facultySelect.innerHTML = '<option value="">-- Select Faculty --</option>';
+                
+                if (course === 'CS101') {
+                    facultySelect.innerHTML += '<option value="1">Dr. Smith</option>';
+                    facultySelect.innerHTML += '<option value="2">Dr. Johnson</option>';
+                } else if (course === 'CS102') {
+                    facultySelect.innerHTML += '<option value="3">Dr. Williams</option>';
+                } else if (course === 'MA101') {
+                    facultySelect.innerHTML += '<option value="4">Dr. Brown</option>';
+                    facultySelect.innerHTML += '<option value="5">Dr. Davis</option>';
+                }
+                
+                facultySelect.disabled = false;
+            } else {
+                facultySelect.innerHTML = '<option value="">-- Select Course First --</option>';
+                facultySelect.disabled = true;
+            }
+        });
+        
+        // Submit feedback
+        function submitFeedback() {
+            const course = document.getElementById('selectCourse').value;
+            const faculty = document.getElementById('selectFaculty').value;
+            
+            if (!course || !faculty) {
+                alert('Please select both course and faculty member');
+                return;
+            }
+            
+            // Check if all questions are answered
+            const questions = document.querySelectorAll('input[type="radio"]:checked');
+            if (questions.length < 6) { // We have 6 questions
+                alert('Please answer all questions before submitting');
+                return;
+            }
+            
+            // Collect feedback data
+            const feedbackData = {
+                courseId: course,
+                facultyId: faculty,
+                ratings: {},
+                comments: document.getElementById('comments').value
+            };
+            
+            // Get all ratings
+            for (let i = 1; i <= 6; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected) {
+                    feedbackData.ratings[`q${i}`] = selected.value;
+                }
+            }
+            
+            // Here you would typically send this data to the server via AJAX
+            console.log('Submitting feedback:', feedbackData);
+            
+            // Simulate success
+            document.getElementById('feedbackForm').style.display = 'none';
+            document.getElementById('feedbackComplete').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
